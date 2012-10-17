@@ -1,0 +1,338 @@
+@charset "utf-8";
+/* CSS Document */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+#ingredient-wrapper {
+	width:984px;
+	padding:0;
+	margin:0 auto;
+}
+
+#ingredient-top-part {
+	border:1px solid #c9c9c9;
+	padding:10px;
+}
+
+#ingredient-search-bar {
+	float:left;
+	margin-top:1px;
+}
+
+#ingredient-search-button {
+	float:left;
+}
+
+#ing-btn {
+	width:44px;
+	height:35px;
+	background:url(../images/ingredient-search-button.gif) no-repeat;
+	border:none;
+	text-indent:-9999px;
+}
+
+#ing-search {
+	width:899px;
+	height:25px;
+	border:5px solid #c9c9c9;
+	border-right:none;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color:#7e7e7f;
+	padding-left:10px;
+	-moz-border-radius-topleft: 4px;
+	-webkit-border-top-left-radius: 4px;
+	border-top-left-radius: 4px;
+	-moz-border-radius-bottomleft: 4px;
+	-webkit-border-bottom-left-radius: 4px;
+	border-bottom-left-radius: 4px;	
+}
+
+#ingredient-letter {
+	background:url(../images/letter-top.gif) no-repeat center 0;
+	padding-top:30px;
+	padding-left:10px;
+}
+
+#ingredient-letter li {
+	float:left;
+}
+
+#ingredient-letter li a {
+	font-size:13px;
+	color:#5b5a5a;
+	font-weight:bold;
+	text-decoration:none;
+	font-family:Arial, Helvetica, sans-serif;
+	background:#f4f4f4;
+	display:block;
+	padding:10px;
+	margin:0 2px;	
+}
+
+#ingredient-letter li a:hover {
+	background:#3b5999;
+	color:#FFF;
+}
+
+#ingredient-letter li a.active {
+	background:#3b5999;
+	color:#FFF;
+}
+
+#ingredient-letter li a.blank {
+	background:#fff;
+}
+
+#ingredient-letter li a:hover.blank {
+	background:#fff;
+	color:#5b5a5a;
+}
+
+#ingredient-tab {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:13px;
+	font-weight:bold;
+	color:#5b5a5a;
+	padding-top:10px;
+	padding-bottom:0px;
+}
+
+#ingredient-tab-left {
+	width:716px;
+	float:left;
+}
+
+#ingredient-tab-right {
+	float:right;
+}
+
+#ingredient-tab ul {
+	float:right;
+}
+
+#ingredient-tab li {
+	float:left;	
+}
+
+#ingredient-tab li a.alternative {
+	width:165px;
+	background:url(../images/btn-alternative.gif) no-repeat;
+	text-align:center;
+	display:block;
+	height:22px;
+	text-decoration:none;
+	color:#5b5a5a;
+	padding-top:7px;
+}
+
+#ingredient-tab li a.healthy {
+	width:147px;
+	background:url(../images/btn-healthy.gif) no-repeat;
+	text-align:center;
+	display:block;
+	height:22px;
+	text-decoration:none;
+	color:#5b5a5a;
+	padding-top:7px;
+}
+
+#ingredient-tab li a.vegan {
+	width:140px;
+	background:url(../images/btn-vegan.gif) no-repeat;
+	text-align:center;
+	display:block;
+	height:22px;
+	text-decoration:none;
+	color:#5b5a5a;
+	padding-top:7px;
+}
+
+#ingredient-tab li a.viewall {
+	width:173px;
+	background:url(../images/btn-viewall.gif) no-repeat;
+	text-align:center;
+	display:block;
+	height:22px;
+	text-decoration:none;
+	color:#5b5a5a;
+	padding-top:7px;
+}
+
+#ingredient-tab li a:hover {
+	background-position:0 -29px;
+}
+
+#ingredient-tab li a.active {
+	background-position:0 -29px;
+}
+
+#subtitution-result {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#515050;
+	padding:10px 10px;
+	background:#e9f1fc;
+	margin-top:10px;
+	-moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+}
+
+#result-table {
+	margin-top:10px;
+}
+
+#ingredient-table {
+	border:1px solid #dedede;
+}
+
+#ingredient-table th {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#7c7b7b;
+	font-weight:bold;
+	height:22px;
+	background:url(../images/table-top-bg.gif) repeat-x;
+	padding-top:8px;
+	
+}
+
+#ingredient-table th.most-left {
+	text-align:left;
+	padding-left:20px !important;
+}
+
+#ingredient-table td, #ingredient-table th {
+	border-right:1px solid #dedede;
+	border-bottom:1px solid #dedede;
+}
+
+#ingredient-table td {
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color:#7c7b7b;
+	padding:5px 0;
+	vertical-align:top !important;
+	line-height:18px;
+}
+
+#ingredient-table td .fittext {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#ingredient-table td a {
+	font-weight:bold;
+}
+
+.coloumn-center {
+	text-align:left;
+	padding-left:20px !important;
+	padding-right:20px !important;
+}
+
+.split-coloumn {
+	background:url(../images/innter-table-bg.gif) repeat-y;
+}
+
+#show-label {
+	float:left;
+	margin-right:10px;
+	padding-top:8px;
+}
+
+.showpick {
+	width:116px;
+	height:24px;
+	background:url(../images/show-field.gif) no-repeat;
+	padding-top:6px;
+	float:right;
+	padding-left:10px;
+	margin-right:5px;
+}
+
+.showpick select {
+	width:110px;
+}
+
+.inner-table {
+	width:100%;
+}
+
+.inner-table-left {
+	width:36px;
+	float:left;
+	text-align:center;
+}
+
+.inner-table-right {
+	display: block;
+	width:80%;
+	float:left;
+	padding-left:5px;
+}
+
+.tab-label {
+	display:inline-block;
+	height:22px;
+	padding-top:7px;
+}
+
+#ajax-loader{
+	display: none;
+    width: 984px;
+    height: 32px;
+	position: absolute;
+	top: 500px;
+	margin: 0 auto;
+	background: url(../images/loading.gif) center no-repeat;
+}
+
+.hide{
+	display: none;
+}
