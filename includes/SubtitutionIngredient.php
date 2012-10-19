@@ -64,7 +64,7 @@ class SubtitutionIngredient
         
         if( filter_var( $value, FILTER_VALIDATE_URL ) ){
                 
-            $path = parse_url( $value, PHP_URL_PATH);
+            $path = parse_url( $value, PHP_URL_PATH );
             
             list( $post_type, $slug ) = explode('/', trim($path,'/'));
             
@@ -93,8 +93,8 @@ class SubtitutionIngredient
      */
     public function hasSlug()
     {
-	return ( !empty($this->slug) ||
-           ( isset($this->_properties['url']) &&
+      return ( !empty($this->slug ) ||
+             ( isset($this->_properties['url'] ) &&
              !isset($this->_properties['search_title'])) );
     }
     

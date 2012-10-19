@@ -1,47 +1,32 @@
 <?php
-
 include_once('evalmath.class.php');
-
 include_once ('Fraction.php');
-
 class usToMatric {
     
     private $is_debug = false;
-    
     private $is_dev_done = false;
-    
     private $format_pattern = false;
-    
     private $quantity = '';
-    
     private $unit = '';
-    
     private $description = '';
-    
     private $servingamt_ori = '';
-    
     private $servingamt_req = '';
-    
     private $metric = '';
-    
     private $is_have_original_unit = false;
-    
     private $is_countable = false;
-    
     private $original_unit = '';
-    
     private $original_quantity = '';
-    
     private $quantity_by_servingamt = '';
-    
     private $unit_by_servingamt = '';
-    
     private $quantity_by_servingamt_by_metric = '';
-    
     private $unit_by_servingamt_by_metric = '';
-    
     public $m = null;
     
+	public $metric_to_us = array(
+									'millilitres' => array('0.20288' => 'teaspoon'),
+									'gram' => array('0.0352' => 'ounch')
+                                    );
+	
     public $us_to_metric = array(
                                     'teaspoon' => array('4.929' => 'millilitres'),
                                     'tablespoon' => array('14.787' => 'millilitres'),
@@ -53,7 +38,7 @@ class usToMatric {
                                     'pound' => array('453.592' => 'gram'),
                                     'drop' => array('0.0649' => 'millilitres'),
                                     'dash' => array('0.308' => 'millilitres'),
-                                    'pinch' => array('0.616' => 'millilitres'),
+                                    'pinch' => array('0.616' => 'millilitres')
                                     );
                                     
                                     
@@ -245,7 +230,6 @@ class usToMatric {
                                                         'dash',
                                                         ),
                                                         
-
                                     );
     
     public $us_alias = array(
@@ -391,7 +375,6 @@ class usToMatric {
          * Get possible UNIT from quantity content
          **/
          
-
         /**
          * Check if original quantity is empty
          **/
@@ -402,7 +385,6 @@ class usToMatric {
             return false;  
             
         }
-
         /**
          * Check if original quantity don't have numeric value, sampel : "Few"
          **/
@@ -415,7 +397,6 @@ class usToMatric {
                  
          }
          
-
                 
         /**
          * Check if original quantity only have round bracket value, sample : (10)
@@ -433,13 +414,10 @@ class usToMatric {
                  
          }
          
-
-
                 
         /**
          * Do calculation
          **/
-
          
         $serving_count = $this->get_servingamt_req() / $this->get_servingamt_ori() ;
         
@@ -458,7 +436,6 @@ class usToMatric {
         
         if(is_array($quantity) || is_array($unit))
         {
-
                     
             /**
              * If quantity or unit is array
@@ -553,7 +530,6 @@ class usToMatric {
                             
                                 if($unit[$kq][$kqq] != '' && $this->is_convertable_by_unit($unit[$kq][$kqq]) !== false && $this->get_metric() == 'metric')
                                 {
-
                                     $unit_convert = $this->is_convertable_by_unit($unit[$kq][$kqq]);
                                     
                                     $current_unit_array[$kq][$kqq] = $unit_convert['unit_converted'];
@@ -579,7 +555,6 @@ class usToMatric {
                                 
                                 
                                 $last_quantity_by_servingamt_array[$kq][$kqq] = $last_quantity_array[$kq][$kqq] * $serving_count;
-
                                 
                             }
                             
@@ -594,7 +569,6 @@ class usToMatric {
                      
                      if(!is_array($last_quantity_array[1]))
                      {
-
                          $this->set_quantity_by_servingamt(
                             trim(
                             $last_quantity_by_servingamt_array[0].' ('.$last_quantity_by_servingamt_array[1].' '.$unit[1].') '.$unit[0]
@@ -610,8 +584,6 @@ class usToMatric {
                          );
                         
                      } else {
-
-
                          $this->set_quantity_by_servingamt(
                             trim(
                             $last_quantity_by_servingamt_array[0].' ('.$last_quantity_by_servingamt_array[1][0].' '.$unit[1][0].' or '.$last_quantity_by_servingamt_array[1][1].' '.$unit[1][1].') '.$unit[0]
@@ -759,7 +731,6 @@ class usToMatric {
                        
                     } else {
                         
-
 foreach($quantity as $kq => $vq)
                         {
                                 $is_convertable_array[$kq] = false;
@@ -857,7 +828,6 @@ foreach($quantity as $kq => $vq)
                             return false;
                             
                         }
-
                     }
                  }
                  
@@ -885,7 +855,6 @@ foreach($quantity as $kq => $vq)
                     $last_quantity_by_servingamt_by_metric_array = false;
                     
                     
-
                     if(is_array($unit))
                     {
                     
@@ -1011,7 +980,6 @@ foreach($quantity as $kq => $vq)
             
             if(@$this->m->evaluate($quantity))
             {
-
                 $this->set_is_countable(true);
                 
                 $is_convertable = false;
@@ -1069,7 +1037,6 @@ foreach($quantity as $kq => $vq)
                     $this->set_quantity_by_servingamt_by_metric($last_quantity_by_matric * $serving_count);
                     
                 }
-
          
          
                 if($is_convertable == true)
@@ -1121,7 +1088,6 @@ foreach($quantity as $kq => $vq)
                 
             }
             
-
             
         }
             
@@ -1139,10 +1105,12 @@ foreach($quantity as $kq => $vq)
         
         $is_convertable = false;
         
-        if($this->is_convertable() == true && $this->get_metric() == 'metric')
-        {
-            
-            $is_convertable = true;
+        if($this->is_convertable() == true && ($this->get_metric() == 'metric'||$this->get_metric() == 'us')) {
+			$is_convertable = true;
+			if ($this->get_metric() == 'us')
+				$metricterm = $this->metric_to_us;
+			else
+				$metricterm = $this->us_to_metric;
         }
         
         $last_quantity = false;
@@ -1164,7 +1132,7 @@ foreach($quantity as $kq => $vq)
             {
                 $current_unit = $this->get_unit();
                 
-                $comparison_value = (float)key($this->us_to_metric[$current_unit]);
+                $comparison_value = (float)key($metricterm[$current_unit]);
                 
                 $last_quantity_by_matric = $last_quantity * $comparison_value;
                 
@@ -1192,7 +1160,6 @@ foreach($quantity as $kq => $vq)
             }
             
             $this->set_is_countable(true);
-
 //            echo '<pre>';
 //            var_dump($last_quantity);
 //            echo '</pre>'; 
@@ -1225,7 +1192,7 @@ foreach($quantity as $kq => $vq)
                 
                 $current_unit = $this->get_unit();
                 
-                $comparison_value = (float)key($this->us_to_metric[$current_unit]);
+                $comparison_value = (float)key($metricterm[$current_unit]);
                 
                 $last_quantity_by_matric = $last_quantity * $comparison_value;
                 
@@ -1286,7 +1253,7 @@ foreach($quantity as $kq => $vq)
             {
                 $current_unit = $this->get_unit();
                 
-                $comparison_value = (float)key($this->us_to_metric[$current_unit]);
+                $comparison_value = (float)key($metricterm[$current_unit]);
                 
                 $last_quantity_by_matric = $last_quantity * $comparison_value;
                 
@@ -1351,7 +1318,7 @@ foreach($quantity as $kq => $vq)
                 {
                     $current_unit = $this->get_unit();
                     
-                    $comparison_value = (float)key($this->us_to_metric[$current_unit]);
+                    $comparison_value = (float)key($metricterm[$current_unit]);
                     
                     $last_quantity_array_by_matric[$k] = $last_quantity_array[$k] * $comparison_value;
                     
@@ -1426,7 +1393,7 @@ foreach($quantity as $kq => $vq)
             {
                 $current_unit = $this->get_unit();
                 
-                $comparison_value = (float)key($this->us_to_metric[$current_unit]);
+                $comparison_value = (float)key($metricterm[$current_unit]);
                 
                 $last_quantity_by_matric = $last_quantity * $comparison_value;
                 
@@ -1474,10 +1441,10 @@ foreach($quantity as $kq => $vq)
                 {
                     $current_unit = $this->get_unit();
                     
-                    $comparison_value = (float)key($this->us_to_metric[$current_unit]);
+                    $comparison_value = (float)key($metricterm[$current_unit]);
                     
                     $last_quantity_by_matric = $last_quantity * $comparison_value;
-                    
+                    ;
                 } else {
                     
                     $last_quantity_by_matric = $last_quantity;
@@ -1502,14 +1469,13 @@ foreach($quantity as $kq => $vq)
             if($is_convertable == true)
             {
             
-                $this->set_quantity_by_servingamt_by_metric(round($last_quantity_by_matric * $serving_count));
+                $this->set_quantity_by_servingamt_by_metric(round($last_quantity_by_matric * $serving_count,2));
                 
             } else {
             
                 $this->set_quantity_by_servingamt_by_metric($last_quantity_by_matric * $serving_count);
                 
             }
-
             
          
          }    
@@ -1581,22 +1547,21 @@ foreach($quantity as $kq => $vq)
          }
          
          
-         if($this->get_quantity_by_servingamt() == 0 && $this->get_is_countable() == false)
-         {
-            //$this->quantity_by_servingamt = '';
-            
-            $this->set_quantity_by_servingamt($this->get_quantity().$serving_division);
-            
-         }
-         
-         if($this->get_quantity_by_servingamt_by_metric() == 0 && $this->get_is_countable() == false)
-         {
-            //$this->quantity_by_servingamt = '';
-            
-            $this->set_quantity_by_servingamt_by_metric( $this->get_quantity().$serving_division);
-            
-         }
-         
+		if($this->get_quantity_by_servingamt() == 0 && $this->get_is_countable() == false)
+		{
+			//$this->quantity_by_servingamt = '';
+			
+			$this->set_quantity_by_servingamt($this->get_quantity().$serving_division);
+		
+		}
+		
+		if($this->get_quantity_by_servingamt_by_metric() == 0 && $this->get_is_countable() == false)
+		{
+			//$this->quantity_by_servingamt = '';
+			
+			$this->set_quantity_by_servingamt_by_metric( $this->get_quantity().$serving_division);
+		
+		}
          
         if($is_convertable == true)
         {
@@ -1605,7 +1570,7 @@ foreach($quantity as $kq => $vq)
                 $current_unit = $this->get_unit();
             }
             
-            foreach($this->us_to_metric[$current_unit] as $x => $y)
+            foreach($metricterm[$current_unit] as $x => $y)
             {
                 
                 $this->set_unit_by_servingamt_by_metric($y);
@@ -1647,23 +1612,19 @@ foreach($quantity as $kq => $vq)
         
         $is_in_alias = $this->getParentStackComplete($unit, $this->metrics_alias);
         
-        if($is_in_alias == false)
+        if($is_in_alias !== false)
         {
-            $is_in_alias = array_key_exists($unit, $this->us_to_metric);
-            
-            return $is_in_alias;
-            
-            
-        } else {
-            
+
             $unit = key($is_in_alias);
             
             $this->set_unit($unit);
             
-            return true;
-            
         }
-        
+        if ($this->metric=='us')
+			$is_in_alias = array_key_exists($unit, $this->metric_to_us);
+		else
+			$is_in_alias = array_key_exists($unit, $this->us_to_metric);
+		return $is_in_alias;
     }
     
     public function is_convertable_by_unit($unit)
@@ -1675,7 +1636,6 @@ foreach($quantity as $kq => $vq)
         
         if($is_in_alias == false)
         {
-
             $is_in_alias = array_key_exists($unit, $this->us_to_metric);
             
             return $is_in_alias;
@@ -1773,7 +1733,6 @@ foreach($quantity as $kq => $vq)
         // Return the stack
         return empty($return) ? false: $return;
     }
-
     
     
     private function set_is_dev_done($value)
@@ -1867,7 +1826,6 @@ foreach($quantity as $kq => $vq)
          return $this->original_unit;
     }
     
-
     
     private function set_original_quantity($value)
     {
@@ -1879,7 +1837,6 @@ foreach($quantity as $kq => $vq)
          return $this->original_quantity;
     }
     
-
     
     private function set_description($value)
     {
@@ -1891,7 +1848,6 @@ foreach($quantity as $kq => $vq)
          return $this->description;
     }
     
-
     
     private function set_metric($value)
     {
@@ -1903,7 +1859,6 @@ foreach($quantity as $kq => $vq)
          return $this->metric;
     }
     
-
     
     private function set_unit($value)
     {
@@ -1915,7 +1870,6 @@ foreach($quantity as $kq => $vq)
          return $this->unit;
     }
     
-
     
     private function set_quantity($value)
     {
@@ -1927,7 +1881,6 @@ foreach($quantity as $kq => $vq)
          return $this->quantity;
     }
     
-
     
     private function set_servingamt_req($value)
     {
@@ -1939,7 +1892,6 @@ foreach($quantity as $kq => $vq)
          return $this->servingamt_req;
     }
     
-
     
     private function set_servingamt_ori($value)
     {
@@ -1988,7 +1940,6 @@ foreach($quantity as $kq => $vq)
         
         
         $unit = $this->get_original_unit();
-
         
         $quantity = trim($this->get_original_quantity());
         
@@ -2080,7 +2031,6 @@ foreach($quantity as $kq => $vq)
         
         if(!$unit || $unit == '')
         {
-
             $isHaveSpace = $this->isHaveSpace($quantity);
     
             $num = null;
@@ -2131,7 +2081,6 @@ foreach($quantity as $kq => $vq)
 //                    print_r('isHaveSpace --------------------');
 //                    echo '</pre>';                
 //            }
-
             /**
              * Check if original quantity is empty
              **/
@@ -2182,11 +2131,9 @@ foreach($quantity as $kq => $vq)
                 }
                 
                 return false;                
-
                 
             }
             
-
             
             if(!$is_numeric || $isHaveSpace)
             {
@@ -2259,7 +2206,6 @@ foreach($quantity as $kq => $vq)
                  $check_if_all_is_have_round_bracket = preg_replace('#\(.*\)#','',$quantity);
                  
                  //$check_if_all_is_have_round_bracket = preg_replace('#\(.+\)\s*#','',$quantity);
-
                  if(!$check_if_all_is_have_round_bracket || $check_if_all_is_have_round_bracket == '' || is_null($check_if_all_is_have_round_bracket) || count($check_if_all_is_have_round_bracket) == 0)
                  {
                         
@@ -2283,7 +2229,6 @@ foreach($quantity as $kq => $vq)
                         
                         
                         $this->set_is_dev_done(true);
-
                         
                         if($this->is_debug == true && $this->get_is_dev_done() == false) 
                         {
@@ -2315,7 +2260,6 @@ foreach($quantity as $kq => $vq)
                  if(strlen($check_if_all_is_have_round_bracket) != strlen($quantity))
                  {
                         
-
                 
                         /**
                          * Check if original quantity only have round bracket with only numbers value on first position, sample : (3) 4 oz
@@ -2388,7 +2332,6 @@ foreach($quantity as $kq => $vq)
                         return false;
                  }
                  
-
                  
         
                 /**
@@ -2396,10 +2339,8 @@ foreach($quantity as $kq => $vq)
                  **/
                  
                  //preg_match('/\[[^\]]*\]/', $quantity, $x); 
-
                  
                  $check_if_all_is_have_bracket = preg_replace('/\[.*\]/','',$quantity);
-
                  if(!$check_if_all_is_have_bracket || $check_if_all_is_have_bracket == '' || is_null($check_if_all_is_have_bracket) || count($check_if_all_is_have_bracket) == 0)
                  {
                         
@@ -2423,7 +2364,6 @@ foreach($quantity as $kq => $vq)
                         
                         
                         $this->set_is_dev_done(true);
-
                         
                         if($this->is_debug == true && $this->get_is_dev_done() == false) 
                         {
@@ -2500,7 +2440,6 @@ foreach($quantity as $kq => $vq)
                     
                  }
         
-
                 /**
                  * Check if original quantity only have number and alpha, no pace, sample : 100g
                  **/
@@ -2697,12 +2636,10 @@ foreach($quantity as $kq => $vq)
                 /**
                  * Check if original quantity have '&' and space , sample : 1 & 1/2 inch
                  **/
-
              
                  if(strpos(trim($quantity),'&') !== false && count($split_quantity_by_space) == 4)
                  {
                 
-
                     if(@$this->m->evaluate(trim($split_quantity_by_space[0])) && @$this->m->evaluate(trim($split_quantity_by_space[2])))
                     {
                          $sum = @$this->m->evaluate(trim($split_quantity_by_space[0])) + @$this->m->evaluate(trim($split_quantity_by_space[2]));
@@ -2747,7 +2684,6 @@ foreach($quantity as $kq => $vq)
                  }
                      
                      
-
                 $split_quantity_by_plus_char = explode('+',trim($quantity));
                 
                 /**
@@ -2909,7 +2845,6 @@ foreach($quantity as $kq => $vq)
                         }
                         
                         return false;
-
                     }
                    
                  }
@@ -2975,7 +2910,6 @@ foreach($quantity as $kq => $vq)
 //                    $possible_unit_two = $temp_two_rest;
                     
                     
-
                     
                     if(strpos((trim($temp_two)),'-') !== false)
                     {
@@ -3211,13 +3145,11 @@ foreach($quantity as $kq => $vq)
                     
                  }
                  
-
                  
                 
                 /**
                  * Check if original quantity have '-' and space ' ', sample : 1 - 1 1/2 tsp
                  **/
-
                 if(strpos((trim($quantity)),'-') !== false)
                 {
                     
@@ -3357,8 +3289,6 @@ foreach($quantity as $kq => $vq)
                     
                 }
                 
-
-
                  
                 
                 /**
@@ -3368,7 +3298,6 @@ foreach($quantity as $kq => $vq)
                  if(count($split_quantity_by_space) == 3 && @$this->m->evaluate($split_quantity_by_space[0]) != false  && @$this->m->evaluate($split_quantity_by_space[1]) != false )
                  {
                             $temp_quantity = @$this->m->evaluate($split_quantity_by_space[0]) + @$this->m->evaluate($split_quantity_by_space[1]);
-
                             if(@$this->m->evaluate($split_quantity_by_space[2]) == false)
                             {
                                 
@@ -3414,7 +3343,6 @@ foreach($quantity as $kq => $vq)
                             return false;
                  
                     
-
                  }
                  
                  
@@ -3467,7 +3395,6 @@ foreach($quantity as $kq => $vq)
                     $this->set_quantity($quantity_filter_alpha);
                         
                     $this->set_unit($quantity_filter_numeric);
-
                     $this->set_is_countable(true); 
                     
                     $this->set_is_dev_done(true);
@@ -3501,11 +3428,7 @@ foreach($quantity as $kq => $vq)
                     }
                      
                     return false;
-
                 }
-
-
-
                  
                 
                 /**
@@ -3632,7 +3555,6 @@ foreach($quantity as $kq => $vq)
                     // TEMP START END
                     
                     
-
                     if($possible_final_quantity_one == '' || $possible_final_quantity_one == false)
                     {
                             
@@ -3828,7 +3750,6 @@ foreach($quantity as $kq => $vq)
                     unset($possible_final_unit_two);
                      
                     return false;
-
                     
                 }
                 
@@ -3837,7 +3758,6 @@ foreach($quantity as $kq => $vq)
                  * If condition else, non countable
                  **/
                  
-
                     
                 $this->set_quantity($this->get_original_quantity());
                     
@@ -3867,7 +3787,6 @@ foreach($quantity as $kq => $vq)
                 }
                 
                 return false;
-
             } else {
                     
                 $this->set_quantity($quantity);
@@ -4010,7 +3929,6 @@ foreach($quantity as $kq => $vq)
                 
                 $this->format_pattern = 'n x / n x';
                             
-
                 
                 if($this->is_debug == true && $this->get_is_dev_done() == false) 
                 {
@@ -4046,7 +3964,6 @@ foreach($quantity as $kq => $vq)
                 $quantity_filter_numeric = trim($quantity_filter_numeric);
                 
                 
-
                     
                 $quantity_filter_alpha = preg_replace('!\s+!', ' ', $quantity_filter_alpha); // Remove double space
                 
@@ -4062,7 +3979,6 @@ foreach($quantity as $kq => $vq)
                 $this->set_quantity($quantity_filter_alpha);
                     
                 $this->set_unit($quantity_filter_numeric);
-
                 $this->set_is_countable(true); 
                 
                 $this->set_is_dev_done(true);
@@ -4178,8 +4094,7 @@ foreach($quantity as $kq => $vq)
     
     /* http://www.php.net/manual/en/function.is-numeric.php#86796 */
     
-    public function is_numeric_regex($str) 
-    { 
+    public function is_numeric_regex($str) { 
         $str    = "{$str}"; 
     
         if (in_array($str[0], array('-', '+')))    $str = "{$str[0]}0" . substr($str, 1); 
@@ -4192,19 +4107,14 @@ foreach($quantity as $kq => $vq)
     } 
     
     
-    public function debug($var, $type = 'var_dump')
-    {
+    public function debug($var, $type = 'var_dump') {
         echo '<pre>';
         
-        if($type == 'var_dump')
-        {
-            
+        if($type == 'var_dump') {
             var_dump($var);
-            
-        } else {
-            
+        } 
+		else {
             print_r($var);
-            
         }
         
         echo '</pre>';
@@ -4212,4 +4122,4 @@ foreach($quantity as $kq => $vq)
     
     
 }
-
+?>
