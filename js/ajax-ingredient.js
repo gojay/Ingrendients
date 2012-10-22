@@ -8,14 +8,27 @@ jQuery(function($){
     
     /**
      * set show/hide ajax loading
-     */
+     
     $('#ajax-loader').ajaxStart(function(){
 	    $(this).show();
 	    $('#ingredient-table').css({opacity:0.3});
     }).ajaxStop(function(){
 	    $(this).hide();
 	    $('#ingredient-table').css({opacity:1});
-    });	
+    });
+    */
+    
+    function ajaxStart( )
+    {
+	$('#ajax-loader').show();
+	$('#ingredient-table').css({opacity:0.3});
+    }
+    
+    function ajaxStop( )
+    {
+	$('#ajax-loader').hide();
+	$('#ingredient-table').css({opacity:1});
+    }
     
     /** ======================== TAB ======================== */
     
@@ -99,27 +112,27 @@ jQuery(function($){
      */
     $( "#ing-search" ).autocomplete({
 	source: function( request, response ) {
-	$.ajax({
-	    type: 'POST',
-	    url: Ajax.ajaxurl,
-	    dataType: "json",
-	    data: {
-		action:'AFR-ajax-autocomplete',
-		nonce:Ajax.ajaxIngredientNonce,
-		term:request.term
-	    },
-	    success: function( data ) {
-		console.log(data); // debug
-		response( $.map( data, function( item ) {
-		    return {
-			label: item.label,
-			value: item.label,
-			slug: item.slug,
-			permalink: item.permalink
-		    }
-		}));
-	    }
-	});
+	    $.ajax({
+		type: 'POST',
+		url: Ajax.ajaxurl,
+		dataType: "json",
+		data: {
+		    action:'AFR-ajax-autocomplete',
+		    nonce:Ajax.ajaxIngredientNonce,
+		    term:request.term
+		},
+		success: function( data ) {
+		    console.log(data); // debug
+		    response( $.map( data, function( item ) {
+			return {
+			    label: item.label,
+			    value: item.label,
+			    slug: item.slug,
+			    permalink: item.permalink
+			}
+		    }));
+		}
+	    });
 	},
 	minLength: 2,
 	select: function( event, ui ) {
@@ -169,9 +182,11 @@ jQuery(function($){
 		callback(null, response);
 	    },  
 	    error: function(jqXHR, textStatus, errorThrown) {  
-	    var error = jqXHR + " :: " + textStatus + " :: " + errorThrown;  
-			    callback(error, null);
-	    }  
+		var error = jqXHR + " :: " + textStatus + " :: " + errorThrown;  
+		callback(error, null);
+	    },
+	    ajaxStart: window['ajaxStart'],
+	    ajaxStop : window['ajaxStop'],
 	});
     };
     // load by alphabet

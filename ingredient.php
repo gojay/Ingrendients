@@ -23,8 +23,10 @@ define( 'AFR_REQUIRED_WP_VERSION', '3.0' );
 
 /**
  * enable debug mode in wordpress
- */     
-// wp_debug_mode(true);
+ */
+wp_debug_mode(true);
+define( 'AFR_DEBUG', true  );
+define( 'AFR_PAGE_DEBUG', true  );
 
 /**
  * Check minimum wordpress version required > 3.0
@@ -80,6 +82,17 @@ if ( ! defined( 'AFR_PLUGIN_TPL_DIR' ) )
 function dump( $title, $data )
 {
     echo '<h1>'. $title .'</h1><pre>'. print_r($data, 1).'</pre>';
+}
+
+function _number_format( $float_number )
+{
+    $_number = number_format( $float_number, 2 );
+    list( $number, $comma ) = explode( '.', $_number );
+    
+    if( $comma == '00' )
+      return $number;
+    
+    return $_number;
 }
  
 /**

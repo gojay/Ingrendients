@@ -6,8 +6,11 @@
  *
  */
 
-// include ustomatric & fraction class	 
-if( file_exists( ABSPATH . 'resources_conversion/ustomatric.php' ) &&
+// include ustomatric & fraction class
+include_once( AFR_PLUGIN_INC_DIR . '/ustomatric.php');
+include_once( AFR_PLUGIN_INC_DIR . '/FractionOp.php');
+
+/*if( file_exists( ABSPATH . 'resources_conversion/ustomatric.php' ) &&
     file_exists( ABSPATH . 'resources_conversion/FractionOp.php' ) ){    
     
     include_once( ABSPATH . 'resources_conversion/ustomatric.php' );   
@@ -18,7 +21,7 @@ if( file_exists( ABSPATH . 'resources_conversion/ustomatric.php' ) &&
     include_once( AFR_PLUGIN_INC_DIR . '/ustomatric.php');
     include_once( AFR_PLUGIN_INC_DIR . '/FractionOp.php');
     
-}
+}*/
 
 class SubtitutionIngredient
 {    
@@ -110,7 +113,7 @@ class SubtitutionIngredient
         {
             // if key is not url or error
             if( !in_array($key, $not_in_type) )
-                $args = array_merge($args, array($key => $value));
+              $args = array_merge($args, array($key => $value));
         }				
         return $args;		    
     }	
@@ -297,10 +300,14 @@ class SubtitutionIngredient
                         $amount = $sub['amount'];
                         
                         // create ratio
-                        $ratio = $this->_createRatio( $amount, $ingredient );
-                        
+                        // $ratio = $this->_createRatio( $amount, $ingredient );
                         // convert quantity substution by ratio
-                        $convert = $this->_doConvert( $sub, $ratio );
+                        // $convert = $this->_doConvert( $sub, $ratio );
+                        
+                        $metric = $this->_createMetric( $amount, $ingredient );
+                        // convert quantity substution by ratio
+                        $convert = $this->_doConvertMetric( $sub, $metric );
+                        
                         // merging array sub with convert
                         $substitute[$key][] = array_merge( $sub, $convert );
                         
@@ -397,16 +404,19 @@ class SubtitutionIngredient
                 $item->convert_matric();
                 
                 // get quantity 
-                $quantity = $item->get_quantity_by_servingamt_by_metric();
+                $quantity = $item->get_quantity_by_servingamt();
                 // set number format, if quantity is decimal
                 $quantity = ( $this->is_decimal($quantity) ) ? number_format( $quantity, 2 ) : $quantity ;
                 
                 // set to array
                 $results[] = array(
-                   'qty'  => ($quantity == '') ? '' : (float) $quantity,
-                   'unit' => ($item->get_unit_by_servingamt_by_metric() != "") ?
-                          $item->get_unit_by_servingamt_by_metric() : '',
-                   'desc' => $item->get_description()
+                   'qty'  => ( $quantity == '' ) ? '' : (float) $quantity,
+                   'unit' => $item->get_original_unit(),
+                   'desc' => $item->get_description(),
+                   'metric' => array(
+                      'unit' => $item->get_unit_by_servingamt_by_metric(),
+                      'qty'  => $item->get_quantity_by_servingamt_by_metric()
+                   )
                 );
             }
         }
@@ -549,7 +559,6 @@ class SubtitutionIngredient
      * get serving amount (post meta)
      *
      * @return Int
-     */
     public function getServingRecipe( $slug )
     {
         global $wpdb;
@@ -567,6 +576,7 @@ class SubtitutionIngredient
         
         return $serving;
     }
+    */
     
     /**
      * converting subtitutions
@@ -618,6 +628,55 @@ class SubtitutionIngredient
         return $results;
     }
     
+    private function _doConvertMetric( $ingredient, $metric )
+    {		    
+        $subs_type = self::$subs_type;
+        
+        foreach( $subs_type as $key => $_ingredient )
+        {
+             // if substitution key is amount
+            if( $key == 'amount' )
+            {
+                // if have ratio, make the calculation in _calculate method
+                $amount = ( $metric )
+                        ? call_user_func(array(&$this, '_calculateMetric'), $ingredient[$key]['amount'], $metric)
+                        : '' ;
+                // replace amount with the calculation amount
+                $results[$key] = array_replace(
+                    $ingredient[$key],
+                    array( 'amount' => $amount )
+                );
+             
+                $has_convert =  ( $metric['qty'] ) ? 'y' : 'n';  
+                $results[$key]['has_convert'] = $metric;
+                
+            } else {
+            
+                foreach( $ingredient[$key] as $k => $alternate )
+                {
+                    // if have ratio, make the calculation in calculation method, send null otherwise
+                    $qty = ( $metric )
+                        ? call_user_func(array(&$this, '_calculateMetric'), $alternate['qty'], $metric)
+                        : '';		
+                    // replace amount with the calculation amount
+                    $results[$key][$k] = array_replace_recursive(
+                        $alternate,
+                        array( 'qty' => $qty )
+                    );
+             
+                    $has_convert =  ( $metric['qty'] ) ? 'y' : 'n';  
+                    $results[$key][$k]['has_convert'] = $metric;
+                }
+            
+            }
+             // if have ratio, merging results array ratio
+            if($ratio != -1)
+                $results = array_merge($results, array('ratio' => $metric['ratio']));
+        }
+        
+        return $results;
+    }
+    
     /** =================================================================================================== *
      ********************************************** Calculation *********************************************
      ** =================================================================================================== */
@@ -635,11 +694,29 @@ class SubtitutionIngredient
     {	
         // if ingredient unit == substitute unit
         // create ratio between ingredient n subtitute
-        $ratio = ( stripos( $amount['size'], trim( $ingredient['unit'] )) !== false )
-            ? floatval( $ingredient['qty'] / $amount['amount'] )
-            : -1;
-                
+            
+        if( stripos( $amount['size'], trim( $ingredient['unit'] )) !== false ) {
+            $ratio = floatval( $ingredient['qty'] / $amount['amount'] );
+        } else {
+            $ratio = -1;
+        }
+        
         return $ratio;
+    }
+    
+    private function _createMetric( $amount, $ingredient )
+    {	
+        // if ingredient unit == substitute unit
+        // create ratio between ingredient n subtitute
+        $ratio = floatval( $ingredient['qty'] / $amount['amount'] );
+            
+        if( stripos( $amount['size'], trim( $ingredient['unit'] )) !== false ) {
+            $metric = array( 'ratio' => $ratio, 'size' => $amount['size'], 'metric' => $ingredient['metric']['unit'] );
+        } elseif( $amount['size'] == $ingredient['metric']['unit'] ) {
+            $metric = array( 'ratio' => $ratio, 'unit' => $ingredient['metric']['qty'] );
+        } 
+        
+        return $metric;
     }
     
     /**
@@ -650,8 +727,37 @@ class SubtitutionIngredient
      * @param int
      * @param float
      * @return number
-     */ 
+     *
     private function _calculate( $qty, $ratio )
+    {		    
+        if( empty($qty) ) return;
+        
+        // convert to float
+        $qty = $this->_format($qty);
+        
+        // calculate
+        $val = $qty * $ratio;
+        
+        // convert to string( fraction )			
+        return $this->_format($val, false);
+    }
+    */
+    
+    private function _calculate( $qty, $ratio )
+    {		    
+        if( empty($qty) ) return;
+        
+        // convert to float
+        $qty = $this->_format($qty);
+        
+        // calculate
+        $val = $qty * $ratio;
+        
+        // convert to string( fraction )			
+        return $this->_format($val, false);
+    }
+    
+    private function _calculateMetric( $qty, $metric )
     {		    
         if( empty($qty) ) return;
         
@@ -708,7 +814,7 @@ class SubtitutionIngredient
         
         $len = ( strlen($num) > 2 || strlen($den) > 2 );
         if( $len )
-            return number_format( $obj->toFloat(), 2);
+            return number_format( $obj->toFloat(), 2 );
             
         return $obj->toString();
     }

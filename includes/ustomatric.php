@@ -1,6 +1,9 @@
 <?php
+
 include_once('evalmath.class.php');
+
 include_once ('Fraction.php');
+
 class usToMatric {
     
     private $is_debug = false;
@@ -22,51 +25,63 @@ class usToMatric {
     private $unit_by_servingamt_by_metric = '';
     public $m = null;
     
-	public $metric_to_us = array(
-									'millilitres' => array('0.20288' => 'teaspoon'),
-									'gram' => array('0.0352' => 'ounch')
-                                    );
+    public $metric_to_us = array(
+				'millilitres' 	=> array('0.0676280451178'  	=> 'tablespoon'),
+				'teaspoon' 	=> array('5' 	   	    	=> 'gram'),
+				'liter'		=> array('1000'   	 	=> 'gram'),
+				'pint'		=> array('16' 	  	 	=> 'ounce'),
+				'kilogram'	=> array('1000'   	 	=> 'gram'),
+				'cup' 		=> array('15.772'  	 	=> 'tablespoon'),
+				'pound'		=> array('453.59' 	 	=> 'gram'),
+				'ounce' 	=> array('28.349523125'  	=> 'gram'),
+				'gallon'	=> array('293.65892' 	 	=> 'tablespoon'),
+				'gram' 		=> array('0.0352739619496'	=> 'ounce'),
+				'tablespoon' 	=> array('3' 	   	 	=> 'teaspoon'),
+				'quart'		=> array('32' 	  	 	=> 'ounce'),
+				'stick'		=> array('3048'   	 	=> 'millilitres'),
+				'milligram'	=> array('0.001'  	 	=> 'gram'),
+			    );
 	
     public $us_to_metric = array(
-                                    'teaspoon' => array('4.929' => 'millilitres'),
-                                    'tablespoon' => array('14.787' => 'millilitres'),
-                                    'ounce' => array('29.574' => 'millilitres'),
-                                    'cup' => array('236.588' => 'millilitres'),
-                                    'pint' => array('473.176' => 'millilitres'),
-                                    'quart' => array('946.353' => 'millilitres'),
-                                    'gallon' => array('3.785' => 'liter'),
-                                    'pound' => array('453.592' => 'gram'),
-                                    'drop' => array('0.0649' => 'millilitres'),
-                                    'dash' => array('0.308' => 'millilitres'),
-                                    'pinch' => array('0.616' => 'millilitres')
-                                    );
+				'teaspoon' => array('4.929' => 'millilitres'),
+				'tablespoon' => array('14.787' => 'millilitres'),
+				'ounce' => array('29.574' => 'millilitres'),
+				'cup' => array('236.588' => 'millilitres'),
+				'pint' => array('473.176' => 'millilitres'),
+				'quart' => array('946.353' => 'millilitres'),
+				'gallon' => array('3.785' => 'liter'),
+				'pound' => array('453.592' => 'gram'),
+				'drop' => array('0.0649' => 'millilitres'),
+				'dash' => array('0.308' => 'millilitres'),
+				'pinch' => array('0.616' => 'millilitres')
+                            );
                                     
                                     
     public $metrics_alias = array(
-                                    'teaspoon' => array(
-                                                        'tsp',
-                                                        'generous tsp',
-                                                        'heap tsp',
-                                                        'heaped tsp',
-                                                        'heaping tsp',
-                                                        'level tsp',
-                                                        'scant teaspoon',
-                                                        'scant tsp',
-                                                        'teaspoon',
-                                                        'teaspoons',
-                                                        'treaspoon',
-                                                        'tsp hot pepper'
-                                                        ),
-                                    'tablespoon' => array(
-                                                        'tbsp',
-                                                        'Tbsp',
-                                                        'tablespoons',
-                                                        'heaped tbsp',
-                                                        'heaping tbsp',
-                                                        'scant tbsp',
-                                                        'tbsp sesame',
-                                                        ),
-                                    'ounce' => array(
+                                    'teaspoon'	=> array(
+						    'tsp',
+						    'generous tsp',
+						    'heap tsp',
+						    'heaped tsp',
+						    'heaping tsp',
+						    'level tsp',
+						    'scant teaspoon',
+						    'scant tsp',
+						    'teaspoon',
+						    'teaspoons',
+						    'treaspoon',
+						    'tsp hot pepper'
+                                                ),
+                                    'tablespoon'=> array(
+						    'tbsp',
+						    'Tbsp',
+						    'tablespoons',
+						    'heaped tbsp',
+						    'heaping tbsp',
+						    'scant tbsp',
+						    'tbsp sesame',
+                                                ),
+                                    'ounce' 	=> array(
                                                     'oz',
                                                     'loz',
                                                     'fl oz',
@@ -81,43 +96,43 @@ class usToMatric {
                                                     'oz can',
                                                     'oz each',
                                                     'ozs',
-                                                    ),
-                                    'cup' => array(
-                                                  'cup',
-                                                  'cup of',
-                                                  'cups',
-                                                  'cups of',
-                                                  'heaping cup',
-                                                  'scant cup',
-                                                  ),
-                                    'pint' => array(
-                                                  'pint',
-                                                  ),
-                                    'quart' => array(
-                                                  'quart',
-                                                  'quartered',
-                                                  'quarts',
-                                                  ),
-                                    'gallon' => array(
-                                                  'gallon',
-                                                  ),
-                                    'pound' => array(
-                                                    'pound',
-                                                    'pounds',
-                                                    ),
-                                    'drop' => array(
-                                                  'drop',
-                                                  ),
-                                    'dash' => array(
-                                                  'dash',
-                                                  'dashes',
-                                                  'heavy dashes',
-                                                  ),
-                                    'pinch' => array(
-                                                  'pinch',
-                                                  'pinch of',
-                                                  'pinches of',
-                                                  ),
+                                                ),
+                                    'cup' 	=> array(
+						    'cup',
+						    'cup of',
+						    'cups',
+						    'cups of',
+						    'heaping cup',
+						    'scant cup',
+						),
+                                    'pint' 	=> array(
+						    'pint',
+						),
+                                    'quart' 	=> array(
+						    'quart',
+						    'quartered',
+						    'quarts',
+						),
+                                    'gallon' 	=> array(
+						    'gallon',
+						),
+                                    'pound' 	=> array(
+						    'pound',
+						    'pounds',
+						),
+                                    'drop' 	=> array(
+						    'drop',
+						),
+                                    'dash'	 => array(
+						    'dash',
+						    'dashes',
+						    'heavy dashes',
+						),
+                                    'pinch' 	=> array(
+						    'pinch',
+						    'pinch of',
+						    'pinches of',
+						),
                                     );
     
     /*
@@ -298,7 +313,7 @@ class usToMatric {
                                     );
     */
     
-    function usToMatric($quantity = '', $unit = '', $description = '', $servingamt_ori = 1, $servingamt_req = 1, $metric = 'original')
+    function usToMatric( $quantity = '', $unit = '', $description = '', $servingamt_ori = 1, $servingamt_req = 1, $metric = 'original')
     {
         $quantity = iconv('UTF-8', 'ASCII//TRANSLIT', $quantity); // Since we have this kind of contents : 13½inch
         
@@ -731,7 +746,7 @@ class usToMatric {
                        
                     } else {
                         
-foreach($quantity as $kq => $vq)
+			foreach($quantity as $kq => $vq)
                         {
                                 $is_convertable_array[$kq] = false;
                                 
@@ -805,8 +820,7 @@ foreach($quantity as $kq => $vq)
                             
                             return false;
                         
-                        } elseif($this->format_pattern == 'n x X n x')
-                        {
+                        } elseif($this->format_pattern == 'n x X n x') {
                          
                              $this->set_quantity_by_servingamt(
                                 trim(
@@ -830,9 +844,6 @@ foreach($quantity as $kq => $vq)
                         }
                     }
                  }
-                 
-                 
-                 
                  
                  
                  if($this->format_pattern == 'n x + n x' || $this->format_pattern == 'n x / n x')
@@ -932,14 +943,13 @@ foreach($quantity as $kq => $vq)
                             
                             return false;
                             
-                         } elseif($this->format_pattern == 'n x / n x')
-                         {
+                         } elseif($this->format_pattern == 'n x / n x') {
                             
                          
                              $this->set_quantity_by_servingamt(
-                                trim(
-                                $last_quantity_by_servingamt_array[0].' '.$unit[0].' / '.$last_quantity_by_servingamt_array[1].' '.$unit[1]
-                                )
+				    trim(
+					$last_quantity_by_servingamt_array[0].' '.$unit[0].' / '.$last_quantity_by_servingamt_array[1].' '.$unit[1]
+				    )
                              );
                              
                              $this->set_unit_by_servingamt($this->get_original_unit());
@@ -1621,10 +1631,10 @@ foreach($quantity as $kq => $vq)
             
         }
         if ($this->metric=='us')
-			$is_in_alias = array_key_exists($unit, $this->metric_to_us);
-		else
-			$is_in_alias = array_key_exists($unit, $this->us_to_metric);
-		return $is_in_alias;
+	    $is_in_alias = array_key_exists($unit, $this->metric_to_us);
+	else
+	    $is_in_alias = array_key_exists($unit, $this->us_to_metric);
+	return $is_in_alias;
     }
     
     public function is_convertable_by_unit($unit)
@@ -1647,8 +1657,8 @@ foreach($quantity as $kq => $vq)
             $unit_converted = array_values($this->us_to_metric[$unit]);
                     
             $return = array(
-            'unit' => $unit,
-            'unit_converted' => $unit_converted[0]
+		'unit' => $unit,
+		'unit_converted' => $unit_converted[0]
             );
             
             return $return;
@@ -1931,6 +1941,12 @@ foreach($quantity as $kq => $vq)
             return false;
             
         }
+    }
+    
+    
+    public function get_all_metric()
+    {
+	
     }
     
     
@@ -4092,6 +4108,80 @@ foreach($quantity as $kq => $vq)
         }
     }
     
+    /**
+     * =================================================================================== *
+     * ================================== CONVERT UNITS ================================== *
+     * =================================================================================== */
+    
+    public static function SortingMetricToUs( $metric_to_us, $original_unit )
+    {
+	$index = array_search( $original_unit, array_keys($metric_to_us) );
+	
+	$m1 = array_slice( $metric_to_us, 0, $index );
+	$m2 = array_slice( $metric_to_us, $index );
+	$c = array_merge($m1, $m2);
+    
+	$sorting = array();
+	foreach( $c as $k => $v )
+	{
+	    if( $k == $original_unit ){
+		$sorting[$original_unit] = $v;
+	    }
+	    
+	    $_unit = array_values( $v ); $unit = $_unit[0];
+	    if( array_key_exists( $unit, $sorting ) ){
+		
+		$sorting[$k] = $v;
+	
+	    } else {
+		
+		$sorting[$unit] = $c[$unit];
+		
+	    }
+	}
+	
+	return $sorting;
+    }
+    
+    public function get_all_unit_converter()
+    {
+	$units = array();
+	
+	$original_unit = $this->get_original_unit();
+	$metric_unit   = $this->get_unit_by_servingamt_by_metric();
+	$metric_qty    = $this->get_quantity_by_servingamt_by_metric();
+	
+	if ( $this->get_metric() == 'us' && array_key_exists( $metric_unit, $this->metric_to_us ) )
+	{
+	    $metric_to_us = sortingMetricToUs( $this->metric_to_us, $original_unit );
+	    foreach( $metric_to_us as $unit => $metric )
+	    {
+		// search metrics by metric unit
+		if( $convert_by_metric = array_search( $metric_unit, $metric ) )
+		{
+		    // do convert unit by metric unit
+		    $qty = floatval( $metric_qty ) / floatval( $convert_by_metric );
+		    $units[$unit] = _number_format( $qty );
+		    
+		} else {
+		    
+		    // get convert unit by converter
+		    $_unit = array_values( $metric_to_us[$unit] );
+		    // do convert
+		    $qty = floatval( $_qty ) / floatval( key($metric_to_us[$unit]) );
+		    $units[$unit] = _number_format( $qty );
+		    
+		}
+	    }
+	
+	    // remove original n metric units
+	    unset( $units[$original_unit] );
+	    unset( $units[$metric_unit] );
+	}
+	
+	return $metric_to_us;
+    }
+    
     /* http://www.php.net/manual/en/function.is-numeric.php#86796 */
     
     public function is_numeric_regex($str) { 
@@ -4122,4 +4212,6 @@ foreach($quantity as $kq => $vq)
     
     
 }
+
+
 ?>
