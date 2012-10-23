@@ -1,5 +1,5 @@
 <?php
-/*
+
 $query = $wpdb->prepare("
       SELECT
           i.quantity,
@@ -161,12 +161,17 @@ if ( $recipe_posts )
 	
 	echo '<br/>';
 	
+	dump('converts', $item[$k]->get_convert_by_metric());
+	
+	
+	/*echo '<br/>';
+	
 	if ( array_key_exists( $item[$k]->get_original_unit(), $metric_to_us3 ) )
 	{
 	    $sorting[$k] = sortingMetricToUs( $metric_to_us3, $item[$k]->get_original_unit() );
 	    $convert[$k] = convert_unit( $sorting[$k], $item[$k]->get_original_unit(), $item[$k]->get_unit_by_servingamt_by_metric(), $item[$k]->get_quantity_by_servingamt_by_metric() );
 	    dump('convert', $convert[$k]);
-	}   
+	}   */
 	echo '<hr/>';
 	    
 	endif;
@@ -185,7 +190,9 @@ if ( $recipe_posts )
   echo '</pre>';
     
 }
-*/
+
+
+/*
 
 $metric_to_us = array(
     'gram' 		=> array('0.0352739619496'	=> 'ounce'),
@@ -218,7 +225,7 @@ $metric_to_us2 = array(
     'tablespoon' 	=> array('3' 	   	 	=> 'teaspoon'),
     'quart'		=> array('32' 	  	 	=> 'ounce'),
     'milligram'		=> array('0.001'  	 	=> 'gram'),
-);	
+);*/	
 
 
 
@@ -281,7 +288,6 @@ function sortingMetricToUs( $metric_to_us, $original_unit )
     $_so[$original_unit] = $c[$original_unit];
     foreach( $c as $k => $v )
     {
-	
 	$_unit = array_values( $v ); $unit = $_unit[0];
 	if( $unit == $original_unit ){
 	    
@@ -310,7 +316,7 @@ function sortingMetricToUs( $metric_to_us, $original_unit )
     return $_so;
 }
 
-$original_unit1 = 'gram';
+/*$original_unit1 = 'gram';
 $original_qty1 = '200';
 
 $metric_unit1 = 'ounce';
@@ -331,4 +337,4 @@ $metric_qty2  = '12';
 $sorting2 = sortingMetricToUs( $metric_to_us2, $original_unit2 );
 $unit2 = convert_unit( $sorting2, $original_unit2, $metric_unit2, $metric_qty2 );
 dump('SORTING2', $sorting2);
-dump('CONVERT2', $unit2);
+dump('CONVERT2', $unit2);*/

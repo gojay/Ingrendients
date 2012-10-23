@@ -24,9 +24,9 @@ define( 'AFR_REQUIRED_WP_VERSION', '3.0' );
 /**
  * enable debug mode in wordpress
  */
-wp_debug_mode(true);
-define( 'AFR_DEBUG', true  );
-define( 'AFR_PAGE_DEBUG', true  );
+// wp_debug_mode(true);
+define( 'AFR_DEBUG', false  );
+define( 'AFR_PAGE_DEBUG', false  );
 
 /**
  * Check minimum wordpress version required > 3.0
